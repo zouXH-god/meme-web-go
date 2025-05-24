@@ -23,6 +23,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Error create static files")
 	}
+
 	// 读取环境变量
 	err = godotenv.Load(".env")
 	if err != nil {
