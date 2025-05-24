@@ -13,7 +13,7 @@ _✨ 本程序基于 [meme-generator-rs](https://github.com/MemeCrafters/meme-ge
     HOST=127.0.0.1 
     PORT=5222
     
-    MEME_POINT=http://server_a_00018.hostidc.net:2233  # meme-generator-rs 的api地址
+    MEME_POINT=http://127.0.0.1:2233  # meme-generator-rs 的api地址
     ```
 4. 修改 `.env` 文件后重新运行程序
 
