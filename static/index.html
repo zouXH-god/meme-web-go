@@ -227,7 +227,7 @@
             </div>
             <div class="text_val form-group" v-if="option_data.type == 'float' || option_data.type == 'integer'">
                 <label for="text_input" class="col-sm-4 control-label">{{option_data.description}}</label>
-                <input type="number" class="col-sm-8 form-control" v-model="options[option_data.name]">
+                <input type="number" class="col-sm-8 form-control" v-model="options[option_data.name]" @change="set_options(option_data.name, option_data.type, option_data.minimum, option_data.maximum)">
             </div>
         </div>
 
@@ -292,6 +292,25 @@
             })
         },
         methods: {
+            set_options: function (name, type, min, max) {
+                if (type == "float" || type == "integer") {
+                    if (min != null) {
+                        if (this.options[name] < min) {
+                            this.options[name] = min
+                        }
+                    }
+                    if (max != null) {
+                        if (this.options[name] > max) {
+                            this.options[name] = max
+                        }
+                    }
+                    if (type == "float"){
+                        this.options[name] = parseFloat(this.options[name])
+                    }else {
+                        this.options[name] = parseInt(this.options[name])
+                    }
+                }
+            },
             // 获取样例图片url
             get_preview: function () {
                 $.get("/api/memes/" + this.key_select + "/preview", (data) => {
