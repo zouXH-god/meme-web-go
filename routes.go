@@ -10,8 +10,12 @@ import (
 
 func registerRoutes(r *gin.Engine) {
 	// 注册 memes 端点
-	memesCli := memesCli2.NewAPIClient(os.Getenv("MEME_POINT"))
-	memesRouter := view.NewMemesApiRouts(memesCli)
+	var memesClis []*memesCli2.APIClient
+	points := strings.Split(os.Getenv("MEME_POINTS"), ",")
+	for _, point := range points {
+		memesClis = append(memesClis, memesCli2.NewAPIClient(point))
+	}
+	memesRouter := view.NewMemesApiRouts(memesClis)
 	// 先注册 API 路由
 	apiRoute := r.Group("/api")
 	{

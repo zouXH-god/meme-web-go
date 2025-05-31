@@ -206,11 +206,11 @@
                 <input class="col-sm-8 form-control" type="text" id="text_input" v-model="text_list[index]">
             </div>
         </div>
-        <div class="prompt_box" v-if="img_options.length >= 1">
+        <div class="prompt_box" v-if="img_options && img_options.length >= 1">
             <div class="prompt_box_title">附加选项</div>
             附加选项可能存在相同意义的一个总选项与多个分选项
         </div>
-        <div class="text_box form-horizontal" v-if="img_options.length >= 1" v-for="(option_data, index) in img_options">
+        <div class="text_box form-horizontal" v-if="img_options && img_options.length >= 1" v-for="(option_data, index) in img_options">
             <div class="text_val form-group" v-if="option_data.type == 'string'">
                 <label for="text_input" class="col-sm-4 control-label">{{option_data.description}}</label>
                 <select class="col-sm-8 form-control" v-model="options[option_data.name]" v-if="option_data.choices">
@@ -341,7 +341,7 @@
                     for (var i = 0; i < data.params.max_texts; i++) {
                         this.text_list.push("")
                     }
-                    if (data.params.default_texts.length >= 1) {
+                    if (data.params.default_texts && data.params.default_texts.length >= 1) {
                         this.text_list = data.params.default_texts
                     }
 

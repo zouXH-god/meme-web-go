@@ -12,15 +12,24 @@ import (
 // APIClient 封装 API 客户端
 type APIClient struct {
 	BaseURL    string
+	memeType   string
 	HTTPClient *http.Client
 }
 
 // NewAPIClient 创建新的 API 客户端
 func NewAPIClient(baseURL string) *APIClient {
-	return &APIClient{
+	cli := &APIClient{
 		BaseURL:    baseURL,
 		HTTPClient: &http.Client{},
 	}
+	var err error
+	cli.memeType, err = cli.GetMemeType()
+	if err != nil {
+		cli.memeType = "rust"
+	} else {
+		cli.memeType = "python"
+	}
+	return cli
 }
 
 // Request 统一的请求方法
