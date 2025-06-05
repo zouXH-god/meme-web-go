@@ -30,6 +30,7 @@ func registerRoutes(r *gin.Engine) {
 		apiRoute.GET("/memes/:key/info", memesRouter.HandleGetMemeInfo)
 		apiRoute.GET("/memes/:key/preview", memesRouter.HandleGetMemePreview)
 		apiRoute.POST("/memes/:key", memesRouter.HandleCreateMeme)
+		apiRoute.POST("/tools/render_list", memesRouter.HandleMkRenderList)
 	}
 
 	// 然后手动设置静态文件路由

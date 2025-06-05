@@ -18,6 +18,7 @@ type MemesApiRout struct {
 type MemesApiRouts struct {
 	memes    []MemesApiRout
 	keys     []string
+	memeKeys map[int][]string
 	keyIndex map[string]int
 	keyInfo  map[string]*memesCli.MemeInfo
 	Infos    []*memesCli.MemeInfo
@@ -48,6 +49,7 @@ func (r *MemesApiRouts) InitInfo() {
 	// 变量初始化
 	var err error
 	r.keys = []string{}
+	r.memeKeys = map[int][]string{}
 	r.keyIndex = map[string]int{}
 	r.keyInfo = map[string]*memesCli.MemeInfo{}
 	r.Infos = []*memesCli.MemeInfo{}
@@ -63,6 +65,7 @@ func (r *MemesApiRouts) InitInfo() {
 				continue
 			}
 			r.keys = append(r.keys, info.Key)
+			r.memeKeys[index] = append(r.memeKeys[index], info.Key)
 			r.keyIndex[info.Key] = index
 			r.keyInfo[info.Key] = &info
 			r.Infos = append(r.Infos, &info)
@@ -242,5 +245,31 @@ func (r *MemesApiRouts) HandleCreateMeme(c *gin.Context) {
 		return
 	}
 
+	c.JSON(http.StatusOK, gin.H{"image_id": imageID})
+}
+
+// HandleMkRenderList 创建渲染列表
+func (r *MemesApiRouts) HandleMkRenderList(c *gin.Context) {
+	var images [][]byte
+	// 获取图片列表
+	for index, cli := range r.memes {
+		imageID, err := cli.client.MkRenderList(r.memeKeys[index])
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		image, err := cli.client.GetImage(imageID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		images = append(images, image)
+	}
+	// 拼接图片
+	imageID, err := memesCli.CombineImagesVertically(images)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{"image_id": imageID})
 }

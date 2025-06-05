@@ -368,3 +368,42 @@ func (c *APIClient) createMemePythonMode(key string, images []Image, texts []str
 
 	return SaveLocalImage(respBody)
 }
+
+func (c *APIClient) MkRenderList(keys []string) (string, error) {
+	var requestBody map[string]interface{}
+	var urlPath string
+	if c.memeType == "python" {
+		requestBody = map[string]interface{}{
+			"meme_list": func(keys []string) (result []interface{}) {
+				for _, key := range keys {
+					result = append(result, map[string]any{
+						"meme_key": key,
+						"disabled": false,
+						"labels":   []string{},
+					})
+				}
+				return
+			}(keys),
+		}
+		urlPath = "/memes/render_list"
+	} else {
+		requestBody = map[string]interface{}{
+			"meme_list": keys,
+		}
+		urlPath = "/tools/render_list"
+	}
+	respBody, err := c.Request("POST", urlPath, requestBody, nil)
+	if err != nil {
+		return "", err
+	}
+	if c.memeType == "python" {
+		return SaveLocalImage(respBody)
+	}
+	var result struct {
+		ImageID string `json:"image_id"`
+	}
+	if err := json.Unmarshal(respBody, &result); err != nil {
+		return "", fmt.Errorf("unmarshal response failed: %v", err)
+	}
+	return result.ImageID, nil
+}

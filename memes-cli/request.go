@@ -56,7 +56,7 @@ func (c *APIClient) Request(method, path string, body interface{}, queryParams m
 		if err != nil {
 			return nil, fmt.Errorf("marshal request body failed: %v", err)
 		}
-		fmt.Println(string(jsonBody))
+		fmt.Println("jsonBody = ", string(jsonBody))
 		reqBody = bytes.NewBuffer(jsonBody)
 	}
 
